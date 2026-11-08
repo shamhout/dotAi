@@ -1,0 +1,261 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   dot Ai design system
+   Every colour below was sampled from the official logo:
+     background  #000613 / #010723   ring gradient #11a6fb → #1d7bf8 → #2335fc → #5e4cf9
+     "AI" mark   #1f7efe → #604cfc   glow accents   #03dcfe / #5af7fc
+   ========================================================================== */
+@theme {
+  --font-sans: 'Cairo Variable', ui-sans-serif, system-ui, 'Segoe UI', Tahoma, Arial, sans-serif;
+
+  /* surfaces */
+  --color-ink: #000613; /* deep midnight navy – primary background */
+  --color-night: #030a2b; /* dark blue – secondary background */
+  --color-panel: #07124a; /* raised surfaces */
+
+  /* accents */
+  --color-sky: #11a6fb; /* cyan-blue – ring start */
+  --color-azure: #1f7efe; /* "AI" start */
+  --color-electric: #2335fc; /* electric blue – primary accent */
+  --color-violet: #5e4cf9; /* violet – ring end */
+  --color-cyan: #03dcfe; /* neon cyan – secondary accent / glow */
+  --color-glow: #5af7fc; /* highlight */
+
+  /* text */
+  --color-iris: #a89bff; /* light violet – accent text on dark (8:1 on --color-ink) */
+  --color-mist: #bccbf0; /* soft light blue – secondary text */
+  --color-haze: #93a6d6; /* muted text (still >7:1 on --color-ink) */
+
+  /* gradients (referenced as var(--gradient-*)) */
+  --gradient-brand: linear-gradient(135deg, #11a6fb 0%, #1f7efe 30%, #2335fc 65%, #5e4cf9 100%);
+  --gradient-text: linear-gradient(100deg, #5af7fc 0%, #11a6fb 35%, #5e7bff 70%, #8b7dff 100%);
+  /* darker stops so white button text keeps >= 5:1 contrast */
+  --gradient-cta: linear-gradient(135deg, #2563f0 0%, #2335fc 55%, #5e4cf9 100%);
+
+  --animate-float: float-y 7s ease-in-out infinite;
+  --animate-float-slow: float-y 9s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 40s linear infinite;
+  --animate-spin-slower: spin-slow 70s linear infinite reverse;
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes float-y {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -10px, 0);
+    }
+  }
+  @keyframes spin-slow {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* ---------- base ---------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;
+  background: var(--color-ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(31, 126, 254, 0.45);
+  color: #fff;
+}
+
+/* sections the sticky header would otherwise cover after an anchor jump */
+section[id],
+main[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- layout helpers ---------- */
+@utility container-x {
+  width: min(100% - 2rem, 76rem);
+  margin-inline: auto;
+}
+
+/* ---------- surfaces ---------- */
+@utility glass {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.065), rgb(255 255 255 / 0.02));
+  border: 1px solid rgb(150 180 255 / 0.15);
+  box-shadow: 0 20px 50px -24px rgb(0 0 0 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+@utility glass-blur {
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+@utility text-gradient {
+  background-image: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---------- buttons ---------- */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.25s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+  .btn-primary {
+    background-image: var(--gradient-cta);
+    box-shadow:
+      0 10px 30px -10px rgb(35 53 252 / 0.85),
+      inset 0 1px 0 rgb(255 255 255 / 0.22);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 16px 38px -10px rgb(60 80 255 / 0.95),
+      inset 0 1px 0 rgb(255 255 255 / 0.3);
+  }
+  .btn-ghost {
+    background: rgb(255 255 255 / 0.045);
+    border: 1px solid rgb(150 180 255 / 0.3);
+  }
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    background: rgb(255 255 255 / 0.09);
+    border-color: rgb(120 200 255 / 0.65);
+  }
+  .btn-sm {
+    min-height: 2.5rem;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.9rem;
+  }
+  .btn-lg {
+    min-height: 3.4rem;
+    padding: 0.8rem 1.9rem;
+    font-size: 1.05rem;
+  }
+}
+
+/* ---------- scroll reveal (see components/Reveal.tsx) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* ---------- decorative backgrounds ---------- */
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(120 150 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(120 150 255 / 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+/* ---------- boot splash (shown until React mounts) ---------- */
+.boot {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+}
+.boot-ring {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 3px solid rgb(31 126 254 / 0.2);
+  border-top-color: var(--color-cyan);
+  animation: spin-slow 0.9s linear infinite;
+}
+
+/* ---------- no-JS fallback (injected by vite.config.ts) ---------- */
+.noscript-fallback {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+.noscript-fallback a {
+  color: var(--color-glow);
+}
+
+/* ---------- accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
