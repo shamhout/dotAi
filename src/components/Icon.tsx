@@ -5,12 +5,24 @@ import type { IconName } from '../config/site'
  * One consistent icon set (24px grid, 1.8 stroke, round caps) drawn inline so
  * the site needs no icon library and no extra network requests.
  */
-export type ExtraIconName = 'menu' | 'close' | 'arrowLeft' | 'check' | 'whatsapp' | 'phone'
+export type ExtraIconName =
+  | 'menu'
+  | 'close'
+  | 'arrowLeft'
+  | 'chevronLeft'
+  | 'check'
+  | 'whatsapp'
+  | 'phone'
+  | 'layers'
+  | 'workflow'
+  | 'shieldCheck'
+  | 'spark'
 
 const paths: Record<IconName | ExtraIconName, ReactNode> = {
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,
   arrowLeft: <path d="M19 12H5M11 18l-6-6 6-6" />,
+  chevronLeft: <path d="M15 18l-6-6 6-6" />,
   check: <path d="M20 6L9 17l-5-5" />,
   phone: (
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -26,6 +38,28 @@ const paths: Record<IconName | ExtraIconName, ReactNode> = {
       </g>
     </>
   ),
+  layers: (
+    <>
+      <path d="M12 2L2 7l10 5 10-5-10-5z" />
+      <path d="M2 12l10 5 10-5" />
+      <path d="M2 17l10 5 10-5" />
+    </>
+  ),
+  workflow: (
+    <>
+      <rect x="3" y="3" width="6" height="6" rx="1.5" />
+      <rect x="15" y="15" width="6" height="6" rx="1.5" />
+      <rect x="15" y="3" width="6" height="6" rx="1.5" />
+      <path d="M9 6h6M6 9v6a3 3 0 0 0 3 3h6" />
+    </>
+  ),
+  shieldCheck: (
+    <>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </>
+  ),
+  spark: <path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z" />,
   users: (
     <>
       <circle cx="9" cy="7" r="4" />

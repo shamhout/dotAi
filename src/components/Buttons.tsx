@@ -7,7 +7,7 @@ type Variant = 'primary' | 'ghost'
 type Size = 'sm' | 'md' | 'lg'
 
 const cls = (variant: Variant, size: Size, extra = '') =>
-  `btn btn-${variant} ${size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : ''} ${extra}`.replace(/\s+/g, ' ').trim()
+  `group btn btn-${variant} ${size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : ''} ${extra}`.replace(/\s+/g, ' ').trim()
 
 interface BaseProps {
   variant?: Variant
@@ -61,7 +61,13 @@ export function WhatsAppButton({
       className={cls(variant, size, className)}
       onClick={onClick}
     >
-      {icon && <Icon name="whatsapp" size={size === 'sm' ? 18 : 22} className="shrink-0" />}
+      {icon && (
+        <Icon
+          name="whatsapp"
+          size={size === 'sm' ? 18 : 21}
+          className="shrink-0 transition-transform duration-300 group-hover:scale-110"
+        />
+      )}
       <span>{children}</span>
       <span className="sr-only"> (يفتح واتساب في نافذة جديدة)</span>
     </a>
