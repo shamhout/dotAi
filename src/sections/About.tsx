@@ -6,9 +6,8 @@ import { gsap, useGsapScene } from '../lib/motion'
 
 /**
  * SCENE 02 — THE REALIZATION
- * Pinned typography theater (desktop): a horizontal laser line slices across the
- * outdated assumption, opens a vertical aperture wipe revealing the core truth,
- * and glides into the philosophy & sectors stream.
+ * Desktop (>=1024px): Pinned horizontal laser sweep + vertical aperture wipe + sectors rail.
+ * Mobile/Tablet (<1024px): Vertical Contrast Lens & Bento Sectors Deck with 3D prism flip.
  */
 export function About() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -89,22 +88,64 @@ export function About() {
         .to(laser, { scaleX: 0.06, opacity: 0.9, duration: 0.35, ease: 'power2.inOut' }, 0.55)
     })
 
-    // Lightweight mobile entrance
+    // Mobile & Tablet (<1024px): Distinct vertical beam drop + 3D prism card unfold + opposing bento slide-in
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-      const mobileTargets = [truthRef.current, philosophyRef.current].filter(
-        (el): el is HTMLDivElement => Boolean(el),
-      )
-      if (!mobileTargets.length || !sectionRef.current) return
-      gsap.from(mobileTargets, {
-        y: 24,
+      const section = sectionRef.current
+      if (!section) return
+
+      gsap.from('.m-about-myth', {
+        y: -18,
+        scale: 0.95,
         opacity: 0,
-        duration: 0.7,
-        stagger: 0.14,
-        ease: 'power2.out',
+        duration: 0.5,
+        ease: 'power3.out',
         clearProps: 'transform,opacity',
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: section,
+          start: 'top 84%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-about-beam', {
+        scaleY: 0,
+        duration: 0.45,
+        ease: 'power2.out',
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-about-prism', {
+        rotateX: -14,
+        transformPerspective: 800,
+        y: 28,
+        scale: 0.93,
+        opacity: 0,
+        duration: 0.68,
+        ease: 'back.out(1.25)',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-about-prism',
           start: 'top 86%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-about-sector', {
+        x: (i: number) => (i % 2 === 0 ? 24 : -24),
+        y: 14,
+        opacity: 0,
+        duration: 0.48,
+        stagger: 0.06,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-about-sectors',
+          start: 'top 88%',
           once: true,
         },
       })
@@ -115,20 +156,15 @@ export function About() {
     <section
       ref={sectionRef}
       id="about"
-      aria-labelledby="about-title"
-      className="relative flex min-h-[85svh] flex-col justify-center overflow-hidden bg-gradient-to-b from-ink via-night/60 to-ink py-20 lg:min-h-[100svh] lg:py-24"
+      aria-label={ABOUT.title}
+      className="relative flex flex-col justify-center overflow-hidden bg-gradient-to-b from-ink via-night/60 to-ink py-14 sm:py-16 lg:min-h-[100svh] lg:py-24"
     >
       <div className="hairline-x absolute inset-x-0 top-0" aria-hidden="true" />
 
-      <div className="container-x">
-        {/* Scene index */}
-        <div className="inline-flex items-center gap-3">
-          <span aria-hidden="true" className="h-px w-8 bg-gradient-to-l from-cyan to-transparent" />
-          <span className="text-xs font-extrabold tracking-wide text-glow sm:text-sm">{ABOUT.sceneTag}</span>
-        </div>
-
+      {/* Desktop View (>=1024px): Unchanged Horizontal Laser Aperture Theater */}
+      <div className="container-x hidden lg:block">
         {/* Beat 1: The Outdated Assumption */}
-        <p ref={mythRef} className="mt-8 max-w-3xl text-xl font-bold leading-relaxed text-mist sm:text-3xl">
+        <p ref={mythRef} className="max-w-3xl text-3xl font-bold leading-relaxed text-mist">
           {ABOUT.preTitle}
         </p>
 
@@ -142,10 +178,7 @@ export function About() {
 
         {/* Beat 2: Aperture Wipe Realization */}
         <div ref={truthRef}>
-          <h2
-            id="about-title"
-            className="text-balance text-[2.3rem] font-black leading-[1.2] tracking-[-0.02em] sm:text-5xl lg:text-[4.4rem]"
-          >
+          <h2 className="text-balance text-[4.4rem] font-black leading-[1.2] tracking-[-0.02em]">
             <span className="text-gradient">{ABOUT.title}</span>
           </h2>
         </div>
@@ -153,7 +186,7 @@ export function About() {
         {/* Beat 3: Philosophy + Sectors Stream */}
         <div ref={philosophyRef} className="mt-10 grid items-end gap-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <p className="text-pretty text-base leading-8 text-mist sm:text-xl sm:leading-9">{ABOUT.lead}</p>
+            <p className="text-pretty text-xl leading-9 text-mist">{ABOUT.lead}</p>
           </div>
           <div className="lg:col-span-5">
             <blockquote className="border-s-2 border-cyan bg-panel/45 py-4 pe-5 ps-5">
@@ -166,21 +199,84 @@ export function About() {
         </div>
 
         {/* Industries Ribbon */}
-        <div className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-ink/85 p-4 sm:p-5">
+        <div className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-ink/85 p-5">
           <div className="mb-3 flex items-center justify-between text-xs">
             <span className="font-extrabold text-glow">{ABOUT.audienceTitle}</span>
             <span className="font-mono text-haze">
               <Latin>01 — 06</Latin>
             </span>
           </div>
-          <ul ref={trackRef} className="flex flex-wrap gap-2.5 lg:flex-nowrap lg:justify-between">
+          <ul ref={trackRef} className="flex flex-nowrap justify-between gap-2">
             {ABOUT.audience.map((item) => (
               <li
                 key={item}
-                className="about-sector-chip inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/10 bg-night/70 px-3.5 py-2 text-xs font-bold text-mist sm:text-sm"
+                className="about-sector-chip inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/10 bg-night/70 px-3.5 py-2 text-sm font-bold text-mist"
               >
-                <Icon name="check" size={14} className="text-cyan" strokeWidth={2.5} />
-                <span>{item}</span>
+                <Icon name="check" size={14} className="shrink-0 text-cyan" strokeWidth={2.5} />
+                <span className="truncate">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Mobile & Tablet View (<1024px): Contrast Lens & Bento Sectors Deck */}
+      <div className="container-x lg:hidden">
+        {/* Outdated Assumption Card */}
+        <div className="m-about-myth rounded-2xl border border-white/10 bg-night/75 p-4 sm:p-5">
+          <div className="flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-haze/70" aria-hidden="true" />
+            <span className="text-[11px] font-bold text-haze">الاعتقاد التقليدي</span>
+          </div>
+          <p className="mt-2 text-sm font-bold leading-7 text-mist line-through decoration-white/25 sm:text-base">
+            {ABOUT.preTitle}
+          </p>
+        </div>
+
+        {/* Vertical Connector Pulse */}
+        <div aria-hidden="true" className="flex justify-center">
+          <div className="m-about-beam my-2 h-8 w-0.5 origin-top bg-gradient-to-b from-cyan via-sky to-violet shadow-[0_0_12px_var(--color-cyan)]" />
+        </div>
+
+        {/* Realization Prism Card */}
+        <div className="m-about-prism surface-console relative overflow-hidden rounded-3xl border border-cyan/35 p-5 sm:p-7">
+          <div className="border-s-4 border-cyan ps-4">
+            <h2 className="text-balance text-[1.85rem] font-black leading-[1.25] sm:text-4xl">
+              <span className="text-gradient">{ABOUT.title}</span>
+            </h2>
+          </div>
+
+          <p className="mt-3.5 text-pretty text-sm leading-7 text-mist sm:text-base sm:leading-8">{ABOUT.lead}</p>
+
+          <div className="mt-4 rounded-2xl border border-sky/25 bg-ink/85 p-3.5 sm:p-4">
+            <span className="block text-[11px] font-extrabold text-glow">
+              رؤية <Latin>dot Ai</Latin>
+            </span>
+            <p className="mt-1 text-sm font-black leading-6 text-white sm:text-base">{ABOUT.statement}</p>
+          </div>
+        </div>
+
+        {/* Asymmetric 2-Column Bento Sectors Grid */}
+        <div className="m-about-sectors mt-6 rounded-2xl border border-white/10 bg-ink/85 p-4 sm:p-5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-extrabold text-glow">{ABOUT.audienceTitle}</span>
+            <span className="font-mono text-haze">
+              <Latin>01 — 06</Latin>
+            </span>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            {ABOUT.audience.map((item, i) => (
+              <li
+                key={item}
+                className="m-about-sector flex flex-col justify-between gap-2 rounded-xl border border-white/10 bg-night/75 p-3 sm:p-3.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <Icon name="check" size={13} className="shrink-0 text-cyan" strokeWidth={2.5} />
+                  <span className="font-mono text-[10px] font-bold text-glow/85">
+                    <Latin>{String(i + 1).padStart(2, '0')}</Latin>
+                  </span>
+                </div>
+                <span className="text-xs font-bold leading-snug text-white sm:text-sm">{item}</span>
               </li>
             ))}
           </ul>

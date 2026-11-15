@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { WhatsAppButton } from '../components/Buttons'
-import { Icon } from '../components/Icon'
 import { Latin } from '../components/Latin'
 import { Logo } from '../components/Logo'
 import { FINAL_CTA } from '../config/site'
@@ -61,13 +60,14 @@ export function FinalCta() {
       })
     })
 
+    // Mobile & Tablet (<1024px): Distinct vertical portal rise + orbital emergence + 2-col system shortcuts
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.final-stagger', {
-        y: 16,
+      gsap.from('.final-stage', {
+        y: 32,
+        scale: 0.94,
         opacity: 0,
-        duration: 0.55,
-        stagger: 0.07,
-        ease: 'power2.out',
+        duration: 0.72,
+        ease: 'power4.out',
         clearProps: 'transform,opacity',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -75,13 +75,41 @@ export function FinalCta() {
           once: true,
         },
       })
+
+      gsap.from('.final-ring', {
+        scale: 0.58,
+        opacity: 0,
+        duration: 0.95,
+        stagger: 0.14,
+        ease: 'back.out(1.1)',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 88%',
+          once: true,
+        },
+      })
+
+      gsap.from('.final-stagger', {
+        y: 18,
+        opacity: 0,
+        duration: 0.58,
+        stagger: 0.07,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 86%',
+          once: true,
+        },
+      })
     })
   })
 
   return (
-    <section ref={sectionRef} id="contact" aria-labelledby="contact-title" className="relative pb-24 pt-12 lg:pb-32">
+    <section ref={sectionRef} id="contact" aria-labelledby="contact-title" className="relative overflow-x-clip pb-16 pt-8 sm:pb-24 lg:pb-32 lg:pt-12">
       <div className="container-x">
-        <div className="final-stage surface-console relative isolate overflow-hidden rounded-3xl border border-sky/30 px-6 py-16 text-center sm:px-12 sm:py-24">
+        <div className="final-stage surface-console relative isolate overflow-hidden rounded-3xl border border-sky/30 px-5 py-14 text-center sm:px-12 sm:py-24">
           {/* Concentric orbital light rings (brand ring geometry without clipart) */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 grid place-items-center overflow-hidden">
             <div className="final-ring animate-spin-slow size-[32rem] rounded-full border border-dashed border-sky/18 sm:size-[44rem]" />
@@ -98,14 +126,9 @@ export function FinalCta() {
             <Logo size="md" />
           </div>
 
-          <div className="final-stagger inline-flex items-center gap-2.5 rounded-full border border-cyan/30 bg-cyan/10 px-4 py-1.5 text-xs font-bold text-glow">
-            <Icon name="whatsapp" size={16} />
-            <span>{FINAL_CTA.sceneTag}</span>
-          </div>
-
           <h2
             id="contact-title"
-            className="final-stagger mx-auto mt-6 max-w-3xl text-balance text-[2rem] font-black leading-[1.3] sm:text-5xl"
+            className="final-stagger mx-auto max-w-3xl text-balance text-[2rem] font-black leading-[1.3] sm:text-5xl"
           >
             {FINAL_CTA.title}
           </h2>
@@ -114,17 +137,17 @@ export function FinalCta() {
           </p>
 
           {/* Primary WhatsApp Conversion CTA */}
-          <div className="final-stagger mt-10 flex flex-col items-center justify-center gap-4">
+          <div className="final-stagger mt-10 flex flex-col items-center justify-center gap-3.5 sm:gap-4">
             <WhatsAppButton message="general" size="lg" className="w-full sm:w-auto">
               {FINAL_CTA.cta}
             </WhatsAppButton>
 
-            {/* Quick system-specific WhatsApp shortcuts */}
-            <div className="flex w-full flex-col justify-center gap-2.5 sm:w-auto sm:flex-row">
-              <WhatsAppButton message="hr" variant="ghost" size="sm">
+            {/* Quick system-specific WhatsApp shortcuts (2-col balanced grid on Mobile) */}
+            <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-row">
+              <WhatsAppButton message="hr" variant="ghost" size="sm" className="w-full justify-center px-2.5 text-xs sm:w-auto sm:px-4 sm:text-sm">
                 {FINAL_CTA.hrShortcut}
               </WhatsAppButton>
-              <WhatsAppButton message="sales" variant="ghost" size="sm">
+              <WhatsAppButton message="sales" variant="ghost" size="sm" className="w-full justify-center px-2.5 text-xs sm:w-auto sm:px-4 sm:text-sm">
                 {FINAL_CTA.salesShortcut}
               </WhatsAppButton>
             </div>

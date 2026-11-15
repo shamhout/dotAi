@@ -73,7 +73,7 @@ export function ProductWorkbench({ system }: { system: 'hr' | 'sales' }) {
               role="tab"
               aria-selected={selected}
               onClick={() => (isHr ? setHrTab(tab.id as HrTab) : setSalesTab(tab.id as SalesTab))}
-              className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-bold transition-all sm:text-[13px] ${
+              className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-[10.5px] font-bold transition-all min-[380px]:px-2 min-[380px]:text-xs sm:text-[13px] ${
                 selected
                   ? isHr
                     ? 'border border-cyan/35 bg-cyan/15 text-glow shadow-[0_4px_16px_-6px_rgb(3_220_254/0.5)]'
@@ -147,7 +147,7 @@ export function ProductWorkbench({ system }: { system: 'hr' | 'sales' }) {
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-7 gap-1.5 text-center text-[11px] text-haze">
+            <div className="grid grid-cols-7 gap-1 text-center text-[9.5px] text-haze min-[380px]:gap-1.5 min-[380px]:text-[11px]">
               {['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'].map((d) => (
                 <span key={d} className="pb-1 font-semibold">
                   {d}
@@ -291,7 +291,7 @@ export function ProductWorkbench({ system }: { system: 'hr' | 'sales' }) {
             ].map((item, idx) => (
               <div
                 key={item.title}
-                className="flex items-center justify-between gap-2 rounded-xl border border-white/8 bg-night/70 px-3.5 py-2.5"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/8 bg-night/70 px-3 py-2.5 sm:px-3.5"
               >
                 <div className="flex items-center gap-2.5">
                   <span

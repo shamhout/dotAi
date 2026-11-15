@@ -7,8 +7,8 @@ import { gsap, useGsapScene } from '../lib/motion'
 
 /**
  * SCENE 05 — THE IMPACT
- * Transitions via an optical radial iris clip-path reveal followed by opposing
- * chaos-to-clarity parallax strips and the 6-pillar architectural matrix.
+ * Desktop (>=1024px): Optical radial iris wipe + opposing contrast strips + 6-pillar matrix.
+ * Mobile/Tablet (<1024px): Horizontal Transformation Capsules + Asymmetric Bento Value Grid.
  */
 export function Why() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -82,16 +82,33 @@ export function Why() {
       })
     })
 
+    // Mobile & Tablet (<1024px): Distinct alternating capsule snap-in + Bento spring pop
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.why-shift-card, .why-pillar', {
-        y: 18,
+      gsap.from('.m-why-strip', {
+        x: (i: number) => (i % 2 === 0 ? 32 : -32),
+        opacity: 0,
+        duration: 0.52,
+        stagger: 0.07,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-why-strips',
+          start: 'top 88%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-why-bento', {
+        y: 22,
+        scale: 0.9,
         opacity: 0,
         duration: 0.55,
         stagger: 0.06,
-        ease: 'power2.out',
+        ease: 'back.out(1.25)',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 82%',
+          trigger: '.m-why-bento-grid',
+          start: 'top 90%',
           once: true,
         },
       })
@@ -103,21 +120,19 @@ export function Why() {
       ref={sectionRef}
       id="why"
       aria-labelledby="why-title"
-      className="relative overflow-x-clip bg-gradient-to-b from-ink via-night/75 to-ink py-20 lg:py-28"
+      className="relative overflow-x-clip bg-gradient-to-b from-ink via-night/75 to-ink py-14 sm:py-16 lg:py-28"
     >
       <div className="hairline-x absolute inset-x-0 top-0" aria-hidden="true" />
 
       <div ref={irisStageRef} className="container-x">
         <SectionHeading
-          index="05"
           id="why-title"
-          eyebrow={WHY.sceneTag}
           title={WHY.title}
           text={WHY.subtitle}
         />
 
-        {/* 4 High-Contrast Chaos -> Clarity Shifts */}
-        <div className="why-shifts-grid mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Desktop View (>=1024px): 4 High-Contrast Shifts + 1px Matrix */}
+        <div className="why-shifts-grid mt-12 hidden gap-3 lg:grid lg:grid-cols-4">
           {WHY.shifts.map((shift, i) => (
             <div
               key={shift.to}
@@ -134,13 +149,12 @@ export function Why() {
           ))}
         </div>
 
-        {/* Architectural 1px-divided precision matrix */}
-        <div className="why-matrix mt-8 overflow-hidden rounded-2xl border border-sky/20 bg-sky/15">
-          <ul className="grid gap-px sm:grid-cols-2 lg:grid-cols-3">
+        <div className="why-matrix mt-8 hidden overflow-hidden rounded-2xl border border-sky/20 bg-sky/15 lg:block">
+          <ul className="grid grid-cols-3 gap-px">
             {WHY.items.map((item, i) => (
               <li
                 key={item.title}
-                className="why-pillar group relative flex flex-col justify-between bg-ink/95 p-6 transition-colors duration-300 hover:bg-night/90 sm:p-8"
+                className="why-pillar group relative flex flex-col justify-between bg-ink/95 p-8 transition-colors duration-300 hover:bg-night/90"
               >
                 <span
                   aria-hidden="true"
@@ -158,10 +172,78 @@ export function Why() {
                   </div>
 
                   <h3 className="mt-6 text-lg font-extrabold text-white">{item.title}</h3>
-                  <p className="mt-2.5 text-sm leading-7 text-mist sm:text-base sm:leading-8">{item.text}</p>
+                  <p className="mt-2.5 text-base leading-8 text-mist">{item.text}</p>
                 </div>
               </li>
             ))}
+          </ul>
+        </div>
+
+        {/* Mobile & Tablet View (<1024px): Horizontal Transformation Capsules + Asymmetric Bento Grid */}
+        <div className="lg:hidden">
+          <div className="m-why-strips mx-auto mt-8 max-w-2xl space-y-2.5">
+            {WHY.shifts.map((shift) => (
+              <div
+                key={shift.to}
+                className="m-why-strip flex items-center justify-between gap-2.5 rounded-2xl border border-sky/25 bg-ink/90 px-3.5 py-3 shadow-[0_12px_30px_-20px_rgb(17_166_251/0.45)] sm:px-5 sm:py-3.5"
+              >
+                <span className="min-w-0 flex-1 text-xs font-semibold leading-snug text-haze line-through decoration-white/30 sm:text-sm">
+                  {shift.from}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="grid size-6 shrink-0 place-items-center rounded-full border border-cyan/35 bg-cyan/10 text-cyan sm:size-7"
+                >
+                  <Icon name="arrowLeft" size={12} />
+                </span>
+                <span className="text-gradient min-w-0 flex-1 text-end text-sm font-black leading-snug sm:text-base">
+                  {shift.to}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <ul className="m-why-bento-grid mx-auto mt-6 grid max-w-2xl grid-cols-2 gap-2.5 sm:gap-3.5">
+            {WHY.items.map((item, i) => {
+              const isBanner = i === 0 || i === WHY.items.length - 1
+              return isBanner ? (
+                <li
+                  key={item.title}
+                  className="m-why-bento col-span-2 flex items-center gap-3.5 rounded-2xl border border-sky/25 bg-gradient-to-l from-panel/75 to-night/90 p-4 sm:p-5"
+                >
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-sky/30 bg-panel/70 text-glow">
+                    <Icon name={item.icon} size={20} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-sm font-extrabold text-white sm:text-base">{item.title}</h3>
+                      <span className="font-mono text-[11px] font-bold text-cyan/80">
+                        <Latin>{String(i + 1).padStart(2, '0')}</Latin>
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs leading-6 text-mist sm:text-sm">{item.text}</p>
+                  </div>
+                </li>
+              ) : (
+                <li
+                  key={item.title}
+                  className="m-why-bento col-span-1 flex flex-col justify-between rounded-2xl border border-white/10 bg-night/80 p-3.5 sm:p-5"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="grid size-9 place-items-center rounded-xl border border-sky/25 bg-panel/60 text-glow">
+                        <Icon name={item.icon} size={17} />
+                      </span>
+                      <span className="font-mono text-[10px] font-bold text-haze">
+                        <Latin>{String(i + 1).padStart(2, '0')}</Latin>
+                      </span>
+                    </div>
+                    <h3 className="mt-3 text-sm font-extrabold leading-snug text-white sm:text-base">{item.title}</h3>
+                  </div>
+                  <p className="mt-1.5 text-xs leading-6 text-mist sm:text-sm">{item.text}</p>
+                </li>
+              )
+            })}
           </ul>
         </div>
       </div>

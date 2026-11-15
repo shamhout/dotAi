@@ -9,9 +9,8 @@ import { ScrollTrigger, gsap, useGsapScene } from '../lib/motion'
 
 /**
  * SCENE 04 — THE TRANSFORMATION
- * Pinned split-screen operations network (desktop) + instant tap explorer (mobile):
- * scrolling (or clicking) steps through 4 operational phases while the central
- * SVG nervous system draws connections and illuminates active operational flows.
+ * Desktop (>=1024px): Pinned split-screen operations network + interactive console + SVG circuit draw.
+ * Mobile/Tablet (<1024px): Vertical Neural Spine Timeline with scroll-scrubbed energy spine & node reveals.
  */
 export function Transformation() {
   const [beat, setBeat] = useState(0)
@@ -85,6 +84,53 @@ export function Transformation() {
         },
       })
     })
+
+    // Mobile & Tablet (<1024px): Scroll-scrubbed vertical neural spine & lateral card entrances
+    mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        '.m-trans-spine-fill',
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.m-trans-timeline',
+            start: 'top 82%',
+            end: 'bottom 58%',
+            scrub: 0.4,
+          },
+        },
+      )
+
+      gsap.from('.m-trans-card', {
+        x: -28,
+        y: 18,
+        scale: 0.95,
+        opacity: 0,
+        duration: 0.55,
+        stagger: 0.09,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-trans-timeline',
+          start: 'top 86%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-trans-dock', {
+        y: 20,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-trans-dock',
+          start: 'top 92%',
+          once: true,
+        },
+      })
+    })
   })
 
   const active = TRANSFORMATION.beats[beat] ?? TRANSFORMATION.beats[0]
@@ -96,47 +142,18 @@ export function Transformation() {
   }
 
   return (
-    <section ref={sectionRef} id="transformation" aria-labelledby="transformation-title" className="relative py-20 lg:py-24">
+    <section ref={sectionRef} id="transformation" aria-labelledby="transformation-title" className="relative overflow-x-clip py-14 sm:py-16 lg:py-24">
       <div className="hairline-x absolute inset-x-0 top-0" aria-hidden="true" />
 
       <div className="container-x">
         <SectionHeading
-          index="04"
           id="transformation-title"
-          eyebrow={TRANSFORMATION.sceneTag}
           title={TRANSFORMATION.title}
           text={TRANSFORMATION.subtitle}
         />
 
-        {/* Mobile quick selector */}
-        <div
-          className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:hidden"
-          role="tablist"
-          aria-label="مراحل الترابط الذكي"
-        >
-          {TRANSFORMATION.beats.map((b, i) => (
-            <button
-              key={b.id}
-              type="button"
-              role="tab"
-              aria-selected={beat === i}
-              onClick={() => selectBeat(i)}
-              className={`cursor-pointer rounded-xl border px-3 py-2.5 text-xs font-bold transition-all ${
-                beat === i
-                  ? 'border-cyan/45 bg-panel text-white shadow-[0_8px_20px_-10px_rgb(3_220_254/0.5)]'
-                  : 'border-white/10 bg-night/60 text-mist hover:text-white'
-              }`}
-            >
-              <span className="block font-mono text-[10px] text-glow">
-                <Latin>{b.index}</Latin>
-              </span>
-              <span className="mt-0.5 block truncate">{b.badge}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Pinned Split Choreography Stage */}
-        <div ref={pinStageRef} className="mt-8 grid items-center gap-8 lg:mt-12 lg:grid-cols-12 lg:gap-10">
+        {/* Desktop View (>=1024px): Pinned Split Choreography Stage */}
+        <div ref={pinStageRef} className="mt-12 hidden items-center gap-10 lg:grid lg:grid-cols-12">
           {/* Narrative Beats Column (5 cols) */}
           <div className="space-y-3 lg:col-span-5">
             {TRANSFORMATION.beats.map((item, i) => {
@@ -148,7 +165,7 @@ export function Transformation() {
                   type="button"
                   onClick={() => selectBeat(i)}
                   aria-current={isSelected ? 'step' : undefined}
-                  className={`t-beat-card group block w-full cursor-pointer rounded-2xl border p-4 text-start transition-all duration-300 sm:p-5 ${
+                  className={`t-beat-card group block w-full cursor-pointer rounded-2xl border p-5 text-start transition-all duration-300 ${
                     isSelected
                       ? isViolet
                         ? 'border-violet/60 bg-gradient-to-b from-panel/90 to-night shadow-[0_18px_45px_-22px_rgb(94_76_249/0.65)]'
@@ -169,8 +186,8 @@ export function Transformation() {
                       <Latin>{item.index}</Latin>
                     </span>
                   </div>
-                  <h3 className="mt-2.5 text-base font-black text-white sm:text-lg">{item.title}</h3>
-                  {isSelected && <p className="mt-1.5 text-xs leading-6 text-mist sm:text-sm">{item.text}</p>}
+                  <h3 className="mt-2.5 text-lg font-black text-white">{item.title}</h3>
+                  {isSelected && <p className="mt-1.5 text-sm leading-6 text-mist">{item.text}</p>}
                 </button>
               )
             })}
@@ -178,11 +195,11 @@ export function Transformation() {
 
           {/* Interactive Connected Operations Network (7 cols) */}
           <div className="lg:col-span-7">
-            <div className="t-console-panel surface-console relative overflow-hidden rounded-3xl p-5 sm:p-7">
+            <div className="t-console-panel surface-console relative overflow-hidden rounded-3xl p-7">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2.5">
                   <span className="node-pulse size-2 rounded-full bg-cyan shadow-[0_0_12px_var(--color-cyan)]" aria-hidden="true" />
-                  <span className="text-xs font-extrabold text-white sm:text-sm">
+                  <span className="text-sm font-extrabold text-white">
                     الشبكة التشغيلية المتصلة · <Latin>dot Ai</Latin>
                   </span>
                 </div>
@@ -192,7 +209,7 @@ export function Transformation() {
               </div>
 
               <div className="relative mt-5">
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-2 gap-3">
                   {TRANSFORMATION.beats.map((node, i) => {
                     const isNodeActive = beat === i || active.track === 'both'
                     const isFocused = beat === i
@@ -202,7 +219,7 @@ export function Transformation() {
                         key={node.id}
                         type="button"
                         onClick={() => selectBeat(i)}
-                        className={`flex cursor-pointer flex-col justify-between rounded-2xl border p-4 text-start transition-all duration-300 ${
+                        className={`t-node-tile flex cursor-pointer flex-col justify-between rounded-2xl border p-4 text-start transition-all duration-300 ${
                           isFocused
                             ? isSales
                               ? 'border-violet bg-panel/90 shadow-[0_0_28px_-10px_rgb(94_76_249/0.75)]'
@@ -273,7 +290,7 @@ export function Transformation() {
                   </svg>
                 </div>
 
-                <div className="rounded-2xl border border-sky/30 bg-ink/90 p-4 sm:p-5">
+                <div className="rounded-2xl border border-sky/30 bg-ink/90 p-5">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-xs font-extrabold text-glow">{active.badge}</p>
@@ -293,6 +310,118 @@ export function Transformation() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Mobile & Tablet View (<1024px): Vertical Neural Spine Timeline */}
+        <div className="mt-8 lg:hidden">
+          <div className="m-trans-timeline relative mx-auto max-w-2xl space-y-3.5">
+            {/* Continuous glowing vertical conduit */}
+            <div aria-hidden="true" className="absolute bottom-4 start-5 top-4 w-0.5 overflow-hidden rounded-full bg-white/10">
+              <div className="m-trans-spine-fill h-full w-full origin-top bg-gradient-to-b from-cyan via-sky to-violet shadow-[0_0_12px_var(--color-cyan)]" />
+            </div>
+
+            {TRANSFORMATION.beats.map((item, i) => {
+              const isFocused = beat === i
+              const isViolet = item.track === 'sales'
+              return (
+                <div key={item.id} className="m-trans-card relative ps-14">
+                  {/* Spine Node Badge */}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute start-0 top-4 grid size-10 place-items-center rounded-2xl border transition-all duration-300 ${
+                      isFocused
+                        ? isViolet
+                          ? 'border-violet bg-panel text-iris shadow-[0_0_20px_-4px_rgb(94_76_249/0.8)]'
+                          : 'border-cyan bg-panel text-cyan shadow-[0_0_20px_-4px_rgb(3_220_254/0.75)]'
+                        : isViolet
+                          ? 'border-violet/35 bg-ink text-iris'
+                          : 'border-cyan/30 bg-ink text-glow'
+                    }`}
+                  >
+                    <Icon name={item.icon} size={18} />
+                    {isFocused && (
+                      <span
+                        className={`node-pulse absolute -end-1 -top-1 size-2.5 rounded-full ${
+                          isViolet ? 'bg-violet' : 'bg-cyan'
+                        }`}
+                      />
+                    )}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => selectBeat(i)}
+                    aria-current={isFocused ? 'step' : undefined}
+                    className={`block w-full cursor-pointer rounded-2xl border p-4 text-start transition-all duration-300 ${
+                      isFocused
+                        ? isViolet
+                          ? 'border-violet/55 bg-gradient-to-b from-panel/90 to-night shadow-[0_14px_34px_-18px_rgb(94_76_249/0.6)]'
+                          : 'border-cyan/50 bg-gradient-to-b from-panel/90 to-night shadow-[0_14px_34px_-18px_rgb(3_220_254/0.55)]'
+                        : 'border-white/10 bg-night/65 hover:border-white/25'
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className={`text-xs font-extrabold ${isViolet ? 'text-iris' : 'text-glow'}`}>
+                        {item.badge}
+                      </span>
+                      <span className="font-mono text-xs font-bold text-haze">
+                        <Latin>{item.index} / 04</Latin>
+                      </span>
+                    </div>
+
+                    <h3 className="mt-1.5 text-base font-black text-white">{item.title}</h3>
+                    <p className="mt-1.5 text-xs leading-6 text-mist sm:text-sm">{item.text}</p>
+
+                    {/* Connected Node Chips */}
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                      {item.nodes.map((pill, pi) => (
+                        <span key={pill} className="inline-flex items-center gap-1.5">
+                          {pi > 0 && (
+                            <span aria-hidden="true" className="text-[10px] font-bold text-cyan/75">
+                              ←
+                            </span>
+                          )}
+                          <span
+                            className={`rounded-lg border px-2 py-0.5 text-[11px] font-semibold ${
+                              isFocused
+                                ? 'border-white/18 bg-white/10 text-white'
+                                : 'border-white/8 bg-ink/80 text-mist'
+                            }`}
+                          >
+                            {pill}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Unified Neural Hub Summary Dock */}
+          <div className="m-trans-dock mx-auto mt-5 flex max-w-2xl flex-col items-start justify-between gap-3.5 rounded-2xl border border-sky/30 bg-ink/90 p-4 sm:flex-row sm:items-center sm:p-5">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="node-pulse size-2 rounded-full bg-cyan shadow-[0_0_12px_var(--color-cyan)]" aria-hidden="true" />
+                <span className="text-xs font-extrabold text-glow">
+                  الشبكة التشغيلية المتصلة · <Latin>dot Ai</Latin>
+                </span>
+              </div>
+              <p className="mt-1 text-sm font-black text-white">{active.title}</p>
+            </div>
+            <WhatsAppButton
+              message={active.track === 'sales' ? 'sales' : active.track === 'hr' ? 'hr' : 'general'}
+              size="sm"
+              className="w-full shrink-0 sm:w-auto"
+            >
+              {active.track === 'hr'
+                ? 'اطلب نظام HR'
+                : active.track === 'sales'
+                  ? 'اطلب نظام Sales'
+                  : CONTACT_WHATSAPP_LABEL}
+            </WhatsAppButton>
           </div>
         </div>
       </div>

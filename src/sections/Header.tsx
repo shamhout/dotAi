@@ -113,18 +113,22 @@ export function Header() {
         <div ref={progressRef} className="story-progress-bar h-full w-full bg-[image:var(--gradient-brand)]" />
       </div>
 
-      {/* mobile menu */}
-      <div id="mobile-menu" hidden={!open} className="border-t border-white/10 bg-ink lg:hidden">
+      {/* mobile & tablet menu */}
+      <div
+        id="mobile-menu"
+        hidden={!open}
+        className="glass-blur max-h-[calc(100svh-4.2rem)] overflow-y-auto border-t border-white/10 bg-ink/98 lg:hidden"
+      >
         <nav aria-label="القائمة المحمولة" className="container-x py-5">
-          <ul className="grid divide-y divide-white/8 rounded-2xl border border-white/10 bg-night/60">
+          <ul className="grid divide-y divide-white/8 overflow-hidden rounded-2xl border border-white/10 bg-night/60 md:grid-cols-2 md:divide-y-0 md:gap-px md:bg-white/10">
             {NAV_LINKS.map((link, i) => {
               const isActive = active === link.id
               return (
-                <li key={link.id}>
+                <li key={link.id} className="md:bg-night/90">
                   <a
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className={`flex min-h-12 items-center justify-between px-4 text-base font-semibold transition-colors ${
+                    className={`flex min-h-12 items-center justify-between px-4 text-sm font-semibold transition-colors sm:text-base ${
                       isActive ? 'text-glow' : 'text-mist hover:text-white'
                     }`}
                   >
@@ -138,7 +142,7 @@ export function Header() {
               )
             })}
           </ul>
-          <div className="mt-4 grid gap-2.5">
+          <div className="mt-4 grid gap-2.5 md:grid-cols-2">
             <WhatsAppButton message="general" size="lg" onClick={() => setOpen(false)}>
               {CONTACT_LABEL}
             </WhatsAppButton>

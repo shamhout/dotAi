@@ -8,8 +8,8 @@ import { gsap, useGsapScene } from '../lib/motion'
 
 /**
  * SCENE 07 (PART A) — THE NEXT CHAPTER / ONBOARDING HORIZON
- * Both product streams merge back into a unified brand gradient rail that
- * draws horizontally across scroll while the 4 launch stages lock into position.
+ * Desktop (>=1024px): Unified brand gradient rail + 4-column horizon steps.
+ * Mobile/Tablet (<1024px): Interactive 4-step progress rail + 2x2 connected launch matrix.
  */
 export function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0)
@@ -60,16 +60,32 @@ export function HowItWorks() {
       })
     })
 
+    // Mobile & Tablet (<1024px): Diagonal 2x2 launch matrix deal-in reveal
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.process-step-card, .process-spotlight', {
-        y: 18,
+      gsap.from('.m-proc-rail, .m-proc-dock', {
+        y: 16,
         opacity: 0,
-        duration: 0.55,
-        stagger: 0.08,
-        ease: 'power2.out',
+        duration: 0.48,
+        stagger: 0.1,
+        ease: 'power3.out',
         clearProps: 'transform,opacity',
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: '.m-proc-matrix',
+          start: 'top 88%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-proc-card', {
+        scale: 0.88,
+        y: 22,
+        opacity: 0,
+        duration: 0.52,
+        stagger: 0.07,
+        ease: 'back.out(1.25)',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-proc-matrix',
           start: 'top 88%',
           once: true,
         },
@@ -78,22 +94,23 @@ export function HowItWorks() {
   })
 
   return (
-    <section ref={sectionRef} id="process" aria-labelledby="process-title" className="relative py-20 lg:py-24">
+    <section ref={sectionRef} id="process" aria-labelledby="process-title" className="relative overflow-x-clip py-14 sm:py-16 lg:py-24">
       <div className="hairline-x absolute inset-x-0 top-0" aria-hidden="true" />
 
       <div className="container-x">
-        <SectionHeading index="07" id="process-title" eyebrow={PROCESS.eyebrow} title={PROCESS.title} />
+        <SectionHeading id="process-title" title={PROCESS.title} />
 
-        <div className="process-grid-wrap relative mt-14">
+        {/* Desktop View (>=1024px): Unified Horizon Rail + 4-Column Row */}
+        <div className="process-grid-wrap relative mt-14 hidden lg:block">
           {/* Unified horizontal brand gradient rail connecting Steps 01 -> 04 */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-[12%] top-12 hidden h-px overflow-hidden bg-white/12 lg:block"
+            className="pointer-events-none absolute inset-x-[12%] top-12 h-px overflow-hidden bg-white/12"
           >
             <div className="process-horizon-fill h-full w-full origin-right bg-gradient-to-l from-cyan via-azure to-violet" />
           </div>
 
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          <ol className="grid grid-cols-4 gap-5">
             {PROCESS.steps.map((step, i) => {
               const isActive = activeStep === i
               return (
@@ -133,21 +150,111 @@ export function HowItWorks() {
                       <span className="sr-only">الخطوة {i + 1}: </span>
                       {step.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-7 text-mist sm:text-base">{step.text}</p>
+                    <p className="mt-2 text-base leading-7 text-mist">{step.text}</p>
                   </button>
                 </li>
               )
             })}
           </ol>
 
-          <div className="process-spotlight mt-6 flex flex-col items-start justify-between gap-4 rounded-2xl border border-sky/20 bg-night/75 px-6 py-5 sm:flex-row sm:items-center">
+          <div className="process-spotlight mt-6 flex flex-row items-center justify-between gap-4 rounded-2xl border border-sky/20 bg-night/75 px-6 py-5">
             <div className="flex items-center gap-3.5">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-cyan/30 bg-cyan/10 font-mono text-sm font-black text-glow">
                 <Latin>{String(activeStep + 1).padStart(2, '0')}</Latin>
               </span>
               <div>
                 <p className="text-sm font-extrabold text-white">{current.title}</p>
-                <p className="text-xs text-mist sm:text-sm">{current.text}</p>
+                <p className="text-sm text-mist">{current.text}</p>
+              </div>
+            </div>
+
+            <WhatsAppButton message="general" size="sm" className="w-auto shrink-0">
+              {CONTACT_WHATSAPP_LABEL}
+            </WhatsAppButton>
+          </div>
+        </div>
+
+        {/* Mobile & Tablet View (<1024px): Interactive Progress Rail + 2x2 Launch Matrix */}
+        <div className="mt-8 lg:hidden">
+          {/* Interactive 4-Step Connected Progress Bar */}
+          <div className="m-proc-rail mx-auto mb-4 grid max-w-2xl grid-cols-4 gap-1.5" role="tablist" aria-label="خطوات البدء">
+            {PROCESS.steps.map((step, i) => {
+              const reached = i <= activeStep
+              const isSelected = activeStep === i
+              return (
+                <button
+                  key={step.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => setActiveStep(i)}
+                  className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border py-2 font-mono text-xs font-black transition-all ${
+                    isSelected
+                      ? 'border-cyan bg-panel text-white shadow-[0_0_18px_-6px_rgb(3_220_254/0.7)]'
+                      : reached
+                        ? 'border-sky/40 bg-sky/10 text-glow'
+                        : 'border-white/10 bg-night/60 text-haze hover:text-white'
+                  }`}
+                >
+                  <Latin>{String(i + 1).padStart(2, '0')}</Latin>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* 2x2 Compact Launch Matrix */}
+          <ol className="m-proc-matrix mx-auto grid max-w-2xl grid-cols-2 gap-2.5 sm:gap-3.5">
+            {PROCESS.steps.map((step, i) => {
+              const isActive = activeStep === i
+              return (
+                <li key={step.title} className="m-proc-card">
+                  <button
+                    type="button"
+                    onClick={() => setActiveStep(i)}
+                    aria-pressed={isActive}
+                    className={`flex h-full w-full cursor-pointer flex-col justify-between rounded-2xl border p-3.5 text-start transition-all duration-300 sm:p-5 ${
+                      isActive
+                        ? 'border-cyan/50 bg-gradient-to-b from-panel/90 to-night shadow-[0_14px_34px_-18px_rgb(17_166_251/0.6)]'
+                        : 'border-white/10 bg-night/60 hover:border-sky/30'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span
+                          className={`grid size-9 place-items-center rounded-xl transition-all sm:size-10 ${
+                            isActive
+                              ? 'bg-[image:var(--gradient-cta)] text-white shadow-[0_8px_20px_-6px_rgb(35_53_252/0.8)]'
+                              : 'border border-white/12 bg-ink text-mist'
+                          }`}
+                        >
+                          <Icon name={step.icon} size={18} />
+                        </span>
+                        <span className={`font-mono text-base font-black sm:text-lg ${isActive ? 'text-gradient' : 'text-white/25'}`}>
+                          <Latin>{String(i + 1).padStart(2, '0')}</Latin>
+                        </span>
+                      </div>
+
+                      <h3 className="mt-3 text-sm font-extrabold leading-snug text-white sm:text-base">
+                        <span className="sr-only">الخطوة {i + 1}: </span>
+                        {step.title}
+                      </h3>
+                    </div>
+                    <p className="mt-1.5 text-xs leading-5 text-mist sm:text-sm sm:leading-6">{step.text}</p>
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+
+          {/* Bottom Launch Dock */}
+          <div className="m-proc-dock mx-auto mt-4 flex max-w-2xl flex-col gap-3 rounded-2xl border border-sky/25 bg-night/80 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-cyan/30 bg-cyan/10 font-mono text-xs font-black text-glow">
+                <Latin>{String(activeStep + 1).padStart(2, '0')}</Latin>
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-extrabold text-white">{current.title}</p>
+                <p className="text-xs leading-5 text-mist sm:text-sm">{current.text}</p>
               </div>
             </div>
 

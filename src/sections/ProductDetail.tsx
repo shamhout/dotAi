@@ -9,16 +9,14 @@ import { PRODUCT_THEME } from './productTheme'
 
 /**
  * SCENE 06 — WHAT WE BUILD (#hr and #sales)
- * Interactive dual product studios connected by a Cyan-to-Violet spectral bridge:
- * narrative slides from its system axis while each live workbench settles in 3D space.
+ * Desktop (>=1024px): Interactive dual product studios with 3D perspective stage + matrix.
+ * Mobile/Tablet (<1024px): System Studio card + live workbench + interactive capability spotlight deck.
  */
 export function ProductDetail({ product, flip = false }: { product: Product; flip?: boolean }) {
   const [focusedIdx, setFocusedIdx] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
   const theme = PRODUCT_THEME[product.id]
-  const titleId = `${product.id}-title`
   const isHr = product.id === 'hr'
-  const sceneTag = isHr ? 'المشهد 06 · ما نبنيه — النظام الأول' : 'المشهد 06 · ما نبنيه — النظام الثاني'
   const isOddCapabilities = product.capabilities.length % 2 === 1
 
   const activeCapability = product.capabilities[focusedIdx] ?? product.capabilities[0]
@@ -95,16 +93,60 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
       })
     })
 
+    // Mobile & Tablet (<1024px): Sheet slide + elastic workbench pop + wave chip reveal
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.product-narrative, .product-stage, .product-matrix', {
-        y: 18,
+      if (flip) {
+        gsap.from('.spectral-bridge-beam', {
+          scaleX: 0,
+          duration: 0.75,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 86%',
+            once: true,
+          },
+        })
+      }
+
+      gsap.from('.m-prod-hero', {
+        y: 26,
+        scale: 0.96,
         opacity: 0,
-        duration: 0.55,
-        stagger: 0.1,
-        ease: 'power2.out',
+        duration: 0.6,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 84%',
+          trigger: '.m-prod-hero',
+          start: 'top 86%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-prod-stage', {
+        y: 32,
+        scale: 0.93,
+        opacity: 0,
+        duration: 0.68,
+        ease: 'back.out(1.2)',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-prod-stage',
+          start: 'top 88%',
+          once: true,
+        },
+      })
+
+      gsap.from('.m-prod-cap-chip', {
+        y: 12,
+        scale: 0.92,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.03,
+        ease: 'power2.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: '.m-prod-caps',
+          start: 'top 88%',
           once: true,
         },
       })
@@ -115,8 +157,8 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
     <section
       ref={sectionRef}
       id={product.id}
-      aria-labelledby={titleId}
-      className="relative isolate overflow-x-clip py-20 lg:py-28"
+      aria-label={product.title}
+      className="relative isolate overflow-x-clip py-14 sm:py-16 lg:py-28"
     >
       {/* Unique transition into #sales: diagonal Cyan-to-Violet spectral handoff */}
       {flip ? (
@@ -147,18 +189,12 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
       />
 
       <div className="container-x">
-        {/* Scene 06 Chapter Studio Switcher at top of first system */}
+        {/* Dual Systems Top Switcher Bar at top of first system */}
         {!flip && (
-          <div className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-night/70 px-5 py-3.5">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs font-bold tracking-[0.2em] text-glow">
-                <Latin>SCENE 06</Latin>
-              </span>
-              <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
-              <p className="text-xs font-bold text-mist sm:text-sm">
-                منظومتان متكاملتان نبنيهما لتشغيل شركتك بكفاءة أعلى
-              </p>
-            </div>
+          <div className="mb-7 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-night/70 px-4 py-3 sm:px-5 sm:py-3.5 lg:mb-12">
+            <p className="text-xs font-bold text-mist sm:text-sm">
+              منظومتان متكاملتان نبنيهما لتشغيل شركتك بكفاءة أعلى
+            </p>
             <div className="flex items-center gap-2 text-xs font-bold">
               <a
                 href="#hr"
@@ -178,32 +214,21 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
           </div>
         )}
 
-        {/* Part 1: Editorial Narrative + Interactive 3D Perspective Workbench */}
-        <div className="product-split grid items-center gap-12 lg:grid-cols-12 lg:gap-12">
+        {/* Desktop View (>=1024px): Editorial Narrative + 3D Workbench + Capabilities Ledger */}
+        <div className="product-split hidden items-center gap-12 lg:grid lg:grid-cols-12">
           <div className={`product-narrative lg:col-span-6 ${flip ? 'lg:order-2' : ''}`}>
             <div className="inline-flex flex-wrap items-center gap-3">
-              <span className={`font-mono text-xs font-bold tracking-[0.2em] ${isHr ? 'text-cyan' : 'text-iris'}`}>
-                <Latin>06</Latin>
-              </span>
-              <span
-                aria-hidden="true"
-                className={`h-px w-8 ${isHr ? 'bg-gradient-to-l from-cyan to-transparent' : 'bg-gradient-to-l from-violet to-transparent'}`}
-              />
-              <span className="text-xs font-extrabold text-glow">{sceneTag}</span>
               <span className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-bold ${theme.pill}`}>
                 <Latin>{product.englishName}</Latin>
               </span>
             </div>
 
-            <h2
-              id={titleId}
-              className="mt-4 text-balance text-[1.85rem] font-black leading-[1.35] sm:text-4xl lg:text-[2.65rem]"
-            >
+            <h2 className="mt-4 text-balance text-[2.65rem] font-black leading-[1.35]">
               {product.title}
             </h2>
 
-            <p className="text-gradient mt-3 text-xl font-extrabold leading-9 sm:text-2xl">{product.value}</p>
-            <p className="mt-5 text-pretty text-base leading-8 text-mist sm:text-lg sm:leading-9">{product.howItHelps}</p>
+            <p className="text-gradient mt-3 text-2xl font-extrabold leading-9">{product.value}</p>
+            <p className="mt-5 text-pretty text-lg leading-9 text-mist">{product.howItHelps}</p>
 
             {/* Outcomes checklist */}
             <ul className="mt-7 grid gap-3 border-t border-white/10 pt-6">
@@ -217,7 +242,7 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
               ))}
             </ul>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-9 flex flex-row items-center gap-3">
               <WhatsAppButton message={product.whatsAppKey} size="lg">
                 {product.orderLabel}
               </WhatsAppButton>
@@ -235,35 +260,34 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
           </div>
         </div>
 
-        {/* Part 2: Architectural Capabilities Specification Matrix */}
-        <div className="product-matrix mt-16 lg:mt-20">
+        <div className="product-matrix mt-20 hidden lg:block">
           <div className="overflow-hidden rounded-2xl border border-white/12 bg-night/55">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-panel/45 px-5 py-4 sm:px-7">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-panel/45 px-7 py-4">
               <div>
-                <h3 className="text-lg font-black text-white sm:text-xl">إمكانيات {product.shortName}</h3>
-                <p className="mt-0.5 text-xs text-haze sm:text-sm">
+                <h3 className="text-xl font-black text-white">إمكانيات {product.shortName}</h3>
+                <p className="mt-0.5 text-sm text-haze">
                   اختر أي وحدة لاستعراض دورها في تنظيم العمل اليومي
                 </p>
               </div>
               <div
-                className={`hidden items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold md:inline-flex ${theme.pill}`}
+                className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold ${theme.pill}`}
               >
                 <Icon name={activeCapability.icon} size={15} />
                 <span>{activeCapability.title}</span>
               </div>
             </div>
 
-            <ul className="grid gap-px bg-white/10 sm:grid-cols-2">
+            <ul className="grid grid-cols-2 gap-px bg-white/10">
               {product.capabilities.map((cap, i) => {
                 const isSelected = focusedIdx === i
                 const spanFull = isOddCapabilities && i === product.capabilities.length - 1
                 return (
-                  <li key={cap.title} className={`bg-ink/95 ${spanFull ? 'sm:col-span-2' : ''}`}>
+                  <li key={cap.title} className={`bg-ink/95 ${spanFull ? 'col-span-2' : ''}`}>
                     <button
                       type="button"
                       onClick={() => setFocusedIdx(i)}
                       onMouseEnter={() => setFocusedIdx(i)}
-                      className={`group flex h-full w-full cursor-pointer items-start gap-4 p-5 text-start transition-colors sm:p-6 ${
+                      className={`group flex h-full w-full cursor-pointer items-start gap-4 p-6 text-start transition-colors ${
                         isSelected
                           ? isHr
                             ? 'bg-gradient-to-l from-cyan/10 via-night/90 to-ink'
@@ -295,7 +319,7 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
               })}
             </ul>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 bg-night/75 px-5 py-4 sm:px-7">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 bg-night/75 px-7 py-4">
               <p className="text-sm font-semibold text-mist">
                 هل يناسب <span className="font-bold text-white">{product.shortName}</span> طبيعة عملك؟ تواصل مباشرة مع فريقنا.
               </p>
@@ -303,6 +327,125 @@ export function ProductDetail({ product, flip = false }: { product: Product; fli
                 {product.orderLabel}
               </WhatsAppButton>
             </div>
+          </div>
+        </div>
+
+        {/* Mobile & Tablet View (<1024px): Compact Studio Header + Workbench + Capability Spotlight Deck */}
+        <div className="mx-auto max-w-2xl lg:hidden">
+          {/* 1. System Studio Header Card */}
+          <div className="m-prod-hero rounded-3xl border border-white/12 bg-night/75 p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <span className={`inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-bold ${theme.pill}`}>
+                <Latin>{product.englishName}</Latin>
+              </span>
+              <span className="font-mono text-xs font-bold text-haze">
+                <Latin>{isHr ? '01 / HR' : '02 / SALES'}</Latin>
+              </span>
+            </div>
+
+            <h2 className="mt-4 text-balance text-[1.75rem] font-black leading-[1.32] text-white sm:text-4xl">
+              {product.title}
+            </h2>
+            <p className="text-gradient mt-2 text-lg font-extrabold leading-8 sm:text-2xl">{product.value}</p>
+            <p className="mt-3 text-pretty text-sm leading-7 text-mist sm:text-base sm:leading-8">{product.howItHelps}</p>
+
+            {/* Compact 2-Column Outcomes Pills */}
+            <ul className="mt-5 grid gap-2 min-[380px]:grid-cols-2">
+              {product.benefits.map((b) => (
+                <li
+                  key={b}
+                  className="flex items-start gap-2 rounded-xl border border-white/8 bg-ink/75 p-2.5 text-xs leading-5 text-white sm:p-3 sm:text-sm"
+                >
+                  <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md ${theme.check}`}>
+                    <Icon name="check" size={12} strokeWidth={2.8} />
+                  </span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 2. Interactive Live Workbench */}
+          <div className="m-prod-stage mt-5">
+            <ProductWorkbench system={product.id} />
+            <p className="mt-2.5 text-center text-xs text-haze">
+              تصوّر تفاعلي لمكونات {product.shortName} — يتم تجهيز النظام وفق احتياج شركتك
+            </p>
+          </div>
+
+          {/* 3. Interactive Capability Spotlight Deck (replaces oversized scroll matrix) */}
+          <div className="m-prod-caps mt-5 rounded-3xl border border-white/12 bg-ink/90 p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-base font-black text-white sm:text-lg">إمكانيات {product.shortName}</h3>
+              <span className="text-[11px] font-semibold text-haze">اضغط على أي وحدة</span>
+            </div>
+
+            {/* Active Capability Spotlight */}
+            <div
+              className={`mt-3.5 rounded-2xl border p-4 transition-colors duration-200 ${
+                isHr
+                  ? 'border-cyan/35 bg-gradient-to-l from-cyan/10 to-night'
+                  : 'border-violet/40 bg-gradient-to-l from-violet/14 to-night'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span className={`grid size-10 shrink-0 place-items-center rounded-xl border ${theme.iconTile}`}>
+                    <Icon name={activeCapability.icon} size={18} />
+                  </span>
+                  <h4 className="text-sm font-black text-white sm:text-base">{activeCapability.title}</h4>
+                </div>
+                <span className={`shrink-0 font-mono text-xs font-bold ${isHr ? 'text-cyan' : 'text-iris'}`}>
+                  <Latin>
+                    {String(focusedIdx + 1).padStart(2, '0')} / {String(product.capabilities.length).padStart(2, '0')}
+                  </Latin>
+                </span>
+              </div>
+              <p className="mt-2.5 text-xs leading-6 text-mist sm:text-sm sm:leading-7">{activeCapability.text}</p>
+            </div>
+
+            {/* 2-Column Touch Chip Selector Grid */}
+            <div className="mt-3 grid grid-cols-2 gap-2" role="tablist" aria-label={`اختر ميزة في ${product.shortName}`}>
+              {product.capabilities.map((cap, i) => {
+                const isSelected = focusedIdx === i
+                const spanFull = isOddCapabilities && i === product.capabilities.length - 1
+                return (
+                  <button
+                    key={cap.title}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    onClick={() => setFocusedIdx(i)}
+                    className={`m-prod-cap-chip flex w-full cursor-pointer items-center gap-2 rounded-xl border px-2.5 py-2 text-start text-xs font-bold transition-all ${
+                      spanFull ? 'col-span-2' : ''
+                    } ${
+                      isSelected
+                        ? isHr
+                          ? 'border-cyan/55 bg-panel/90 text-white shadow-[0_0_20px_-10px_rgb(3_220_254/0.55)]'
+                          : 'border-violet/55 bg-panel/90 text-white shadow-[0_0_20px_-10px_rgb(94_76_249/0.6)]'
+                        : 'border-white/8 bg-night/70 text-mist hover:border-white/20 hover:text-white'
+                    }`}
+                  >
+                    <Icon
+                      name={cap.icon}
+                      size={14}
+                      className={`shrink-0 ${isSelected ? (isHr ? 'text-cyan' : 'text-iris') : 'text-haze'}`}
+                    />
+                    <span className="leading-snug">{cap.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 4. Mobile Conversion Bar */}
+          <div className="m-prod-cta mt-4 flex flex-col gap-3 rounded-2xl border border-white/10 bg-night/80 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs font-semibold leading-6 text-mist sm:text-sm">
+              تواصل معنا على واتساب لتجهيز <span className="font-bold text-white">{product.shortName}</span> لشركتك.
+            </p>
+            <WhatsAppButton message={product.whatsAppKey} size="lg" className="w-full shrink-0 sm:w-auto">
+              {product.orderLabel}
+            </WhatsAppButton>
           </div>
         </div>
       </div>
